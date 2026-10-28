@@ -1,0 +1,40 @@
+apiVersion: operator.openshift.io/v1alpha1
+kind: IstioCSR
+metadata:
+  name: default
+  namespace: istio-csr-vault
+  annotations:
+    argocd.argoproj.io/sync-wave: '20'
+spec:
+  istioCSRConfig:
+    certManager:
+      issuerRef:
+        name: vault-pki
+        kind: Issuer
+        group: cert-manager.io
+      istioCACertificate:
+        name: vault-mesh-root
+        key: root-cert.pem
+        namespace: istio-csr-vault
+    istio:
+      namespace: istio-vault-system
+      revisions:
+      - mesh-vault
+    istiodTLSConfig:
+      trustDomain: cluster.local
+      certificateDuration: 1h
+      certificateRenewBefore: 30m
+      maxCertificateDuration: 1h
+      privateKeyAlgorithm: ECDSA
+      privateKeySize: 256
+      certificateDNSNames:
+      - istiod-revision-tag-vault-stable.istio-vault-system.svc
+    istioDataPlaneNamespaceSelector: istio-discovery=mesh-vault
+    logFormat: json
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

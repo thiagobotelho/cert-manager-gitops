@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-pki
+  namespace: istio-vault-system
+  annotations:
+    argocd.argoproj.io/sync-wave: '10'
+spec:
+  vault:
+    server: https://vault.vault.svc:8200
+    path: pki-mesh/sign/mesh-vault
+    caBundleSecretRef:
+      name: vault-server-ca
+      key: ca.crt
+    auth:
+      kubernetes:
+        mountPath: /v1/auth/kubernetes
+        role: mesh-vault
+        serviceAccountRef:
+          name: vault-issuer
+          audiences:
+          - vault://mesh-vault

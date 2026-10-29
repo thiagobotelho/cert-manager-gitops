@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-vault-system
+  labels:
+    istio-discovery: mesh-vault
+    observability: enabled
+  annotations:
+    argocd.argoproj.io/sync-wave: '0'

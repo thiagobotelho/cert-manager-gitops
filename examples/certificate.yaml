@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-demo
+  namespace: istio-vault-system
+spec:
+  secretName: vault-demo-tls
+  duration: 1h
+  renewBefore: 20m
+  dnsNames:
+  - demo.lab.internal
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    name: vault-pki
+    kind: Issuer
